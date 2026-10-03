@@ -2,7 +2,7 @@ extends StateInterface
 
 const BLEND_AMOUNT := 1.0
 const BLEND_TIME := 0.2
-const WALK_SPEED := 5.0
+const WALK_SPEED := 3.0
 const JUMP_VELOCITY := 4.5
 const ROTATION_SPEED := 12.0
 

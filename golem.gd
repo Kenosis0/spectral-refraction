@@ -120,7 +120,7 @@ func die() -> void:
 func spawn_wave() -> void:
 	if dead:
 		return
-	var wave := WaveScene.instantiate() as Node3D
+	var wave := WaveScene.instantiate() as Shockwave
 	if wave == null:
 		return
 	var scene := get_tree().current_scene
@@ -129,13 +129,7 @@ func spawn_wave() -> void:
 		return
 	scene.add_child(wave)
 	active_waves.append(wave)
-	wave.global_position = feet_marker.global_position if feet_marker else global_position
-	for child in wave.get_children():
-		var particles := child as GPUParticles3D
-		if particles:
-			particles.emitting = true
-			if not particles.finished.is_connected(wave.queue_free):
-				particles.finished.connect(wave.queue_free)
+	wave.start(feet_marker.global_position if feet_marker else global_position)
 
 func cancel_waves() -> void:
 	for wave in active_waves:

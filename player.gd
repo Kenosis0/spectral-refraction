@@ -7,14 +7,33 @@ const RunStateScript = preload("res://player_states/run_state.gd")
 const JumpStateScript = preload("res://player_states/jump_state.gd")
 const FallStateScript = preload("res://player_states/fall_state.gd")
 const InteractingStateScript = preload("res://player_states/interacting_state.gd")
+const HitStateScript = preload("res://player_states/hit_state.gd")
+const DeathStateScript = preload("res://player_states/death_state.gd")
+
+signal health_changed(current: int, max: int)
+signal player_hit
+signal player_died
 
 @onready var camera_rig: Node3D = %CameraPivot
 @onready var player_camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
+@onready var animation_tree: AnimationTree = $AnimationTree
+
+@export var max_health: int = 3
+@export var invincibility_time: float = 1.0
 
 var aiming_at: Node3D
 var state_machine: StateMachine
+var health: int
+var invincibility_remaining: float = 0.0
 
 func _ready() -> void:
+	add_to_group("player")
+	max_health = maxi(max_health, 1)
+	health = max_health
+	animation_tree.active = true
+	animation_tree.set("parameters/DeathBlend/blend_amount", 0.0)
+	health_changed.emit(health, max_health)
+
 	state_machine = StateMachineScript.new()
 	state_machine.add_state("idle", IdleStateScript.new(self))
 	state_machine.add_state("walk", WalkStateScript.new(self))
@@ -22,6 +41,8 @@ func _ready() -> void:
 	state_machine.add_state("jump", JumpStateScript.new(self))
 	state_machine.add_state("fall", FallStateScript.new(self))
 	state_machine.add_state("interacting", InteractingStateScript.new(self))
+	state_machine.add_state("hit", HitStateScript.new(self))
+	state_machine.add_state("death", DeathStateScript.new(self))
 	state_machine.set_initial_state("idle")
 
 	get_tree().node_added.connect(_connect_crystal)
@@ -29,7 +50,40 @@ func _ready() -> void:
 		_connect_crystal(crystal)
 
 func _physics_process(delta: float) -> void:
+	invincibility_remaining = maxf(invincibility_remaining - delta, 0.0)
+	if health <= 0:
+		velocity = Vector3.ZERO
+		return
+	if state_machine.get_current_state_name() == "hit":
+		velocity = Vector3.ZERO
+		state_machine.physics_update(delta)
+		return
 	state_machine.physics_update(delta)
+
+
+func take_damage(amount: int = 1) -> void:
+	if health <= 0 or invincibility_remaining > 0.0:
+		return
+
+	health = maxi(health - maxi(amount, 1), 0)
+	invincibility_remaining = invincibility_time
+	health_changed.emit(health, max_health)
+	player_hit.emit()
+
+	if health == 0:
+		state_machine.change_state("death")
+		player_died.emit()
+		# TODO: Game over/restart systems can connect to player_died.
+	else:
+		state_machine.change_state("hit")
+
+
+func respawn() -> void:
+	health = max_health
+	invincibility_remaining = 0.0
+	animation_tree.set("parameters/DeathBlend/blend_amount", 0.0)
+	state_machine.change_state("idle")
+	health_changed.emit(health, max_health)
 
 
 func get_camera_relative_direction(movement_input: Vector2) -> Vector3:

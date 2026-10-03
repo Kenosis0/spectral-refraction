@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://h44isyyw5ine"]
 
 [ext_resource type="Texture2D" uid="uid://cwfsqi16q8esn" path="res://assets/circle_01_a.png" id="1_8asc4"]
+[ext_resource type="Script" uid="uid://bxucqe5ylxmxt" path="res://shockwave.gd" id="2_shockwave"]
 
 [sub_resource type="Curve" id="Curve_p1u0y"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -50,9 +51,28 @@ collision_use_scale = true
 left_to_right = 0.6
 size = Vector3(0.5, 0.5, 0.5)
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_shockwave"]
+height = 1.0
+radius = 0.001
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_debug"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 0.25, 0.05, 0.18)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_debug"]
+material = SubResource("StandardMaterial3D_debug")
+top_radius = 0.001
+bottom_radius = 0.001
+height = 1.0
+radial_segments = 48
+
 [node name="Wave" type="Node3D" unique_id=732348084]
+script = ExtResource("2_shockwave")
+hitbox_delay = 0.5
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1887342757]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4301057, 0)
 emitting = false
 lifetime = 2.5
 one_shot = true
@@ -61,7 +81,7 @@ process_material = SubResource("ParticleProcessMaterial_57qmd")
 draw_pass_1 = SubResource("PlaneMesh_d0u6y")
 
 [node name="GPUParticles3D2" type="GPUParticles3D" parent="." unique_id=270965487]
-transform = Transform3D(0.9999048, -0.013796269, 0, 0.013796269, 0.9999048, 0, 0, 0, 1, 0, 1.4455423, 0)
+transform = Transform3D(0.9999048, -0.013796269, 0, 0.013796269, 0.9999048, 0, 0, 0, 1, 0, 1.875648, 0)
 emitting = false
 amount = 20
 lifetime = 2.5
@@ -71,5 +91,15 @@ process_material = SubResource("ParticleProcessMaterial_yf5fn")
 draw_pass_1 = SubResource("PrismMesh_g4v7s")
 
 [node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="." unique_id=1917727610]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.86612505, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.43601936, 0)
 size = Vector3(17.007568, 2, 30.333984)
+
+[node name="DamageArea" type="Area3D" parent="." unique_id=1697026051]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea" unique_id=514107841]
+shape = SubResource("CylinderShape3D_shockwave")
+
+[node name="DebugCylinder" type="MeshInstance3D" parent="." unique_id=1655612364]
+visible = false
+mesh = SubResource("CylinderMesh_debug")

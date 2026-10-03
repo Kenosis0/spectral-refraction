@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://cmu4yibessu57" path="res://crystalize_mirror.tscn" id="18_4c15r"]
 [ext_resource type="PackedScene" uid="uid://uc3gcrganfsh" path="res://beam_emitter.tscn" id="18_ait7k"]
 [ext_resource type="PackedScene" uid="uid://evmb6220mcyj" path="res://golem.tscn" id="20_42xju"]
+[ext_resource type="PackedScene" path="res://health_hud.tscn" id="21_v7sqt"]
+[ext_resource type="PackedScene" uid="uid://mp3sibkaon6m" path="res://game_over.tscn" id="22_game_over"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_oi3di"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -1094,7 +1096,6 @@ core_depth_offset = -0.02
 
 [node name="CrystalizeMirror" parent="." unique_id=1057573234 instance=ExtResource("18_4c15r")]
 transform = Transform3D(-0.5759696, 0, 0.81747115, 0, 1, 0, -0.81747115, 0, -0.5759696, -9.404213, 0, 13.415352)
-rotation_speed = null
 
 [node name="CrystalizeMirror2" parent="." unique_id=2141359547 instance=ExtResource("18_4c15r")]
 transform = Transform3D(0.93380976, 0, 0.35777003, 0, 1, 0, -0.35777003, 0, 0.93380976, 9.44768, 0, 13.415352)
@@ -1121,26 +1122,13 @@ visible = false
 player = NodePath("../Player")
 movement_area = NodePath("../GolemMovementRange")
 activate_on_ready = true
-turn_speed = null
-smash_turn_speed_multiplier = null
-facing_yaw_offset_degrees = null
-forward_speed = null
-strafe_speed_multiplier = null
-backward_speed_multiplier = null
-min_distance_to_player = null
-recenter_stop_distance = null
-idle_duration_min = null
-idle_duration_max = null
-move_duration_min = null
-move_duration_max = null
-mode_interval_min = null
-mode_interval_max = null
-attack_cooldown_min = null
-attack_cooldown_max = null
-smash_impact_delay = null
-smash_safety_timeout = null
-core_collision_layer = null
-gravity_scale = null
+min_distance_to_player = 5.0
+idle_duration_min = 3.0
+idle_duration_max = 3.5
+mode_interval_min = 2.5
+mode_interval_max = 3.5
+attack_cooldown_min = 2.5
+attack_cooldown_max = 4.5
 
 [node name="GolemMovementRange" type="Area3D" parent="." unique_id=10396846]
 collision_mask = 16
@@ -1149,5 +1137,9 @@ collision_mask = 16
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.485321, -0.3479364)
 shape = SubResource("CylinderShape3D_g4v7s")
 debug_color = Color(1, 0, 0, 0.41960785)
+
+[node name="HealthHUD" parent="." unique_id=312530389 instance=ExtResource("21_v7sqt")]
+
+[node name="GameOver" parent="." unique_id=271419971 instance=ExtResource("22_game_over")]
 
 [editable path="CrystalizeMirror5"]

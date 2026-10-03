@@ -13,7 +13,6 @@ func enter_state(_prev_state: String = "") -> void:
 	elapsed = 0.0
 	emitted = false
 	golem.stop_locomotion()
-	golem.cancel_waves()
 	golem.animation_tree.active = false
 	if golem.core_hitbox:
 		golem.core_hitbox.monitoring = false
