@@ -32,6 +32,7 @@ sky_material = SubResource("ProceduralSkyMaterial_oi3di")
 
 [sub_resource type="Environment" id="Environment_f2txt"]
 background_mode = 2
+background_energy_multiplier = 0.45
 sky = SubResource("Sky_0b4ue")
 tonemap_mode = 2
 glow_enabled = true
@@ -1016,7 +1017,6 @@ shape = SubResource("ConcavePolygonShape3D_42xju")
 [node name="LevelRoom" type="Node3D" parent="." unique_id=2123127826]
 
 [node name="Cieling" type="MeshInstance3D" parent="LevelRoom" unique_id=948488214]
-visible = false
 mesh = SubResource("ArrayMesh_pp846")
 
 [node name="Cube_002" type="MeshInstance3D" parent="LevelRoom" unique_id=902812920]
